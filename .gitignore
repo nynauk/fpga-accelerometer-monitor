@@ -1,0 +1,6 @@
+build/
+*.cf
+.Xil/
+*.jou
+*.log
+!reports/*

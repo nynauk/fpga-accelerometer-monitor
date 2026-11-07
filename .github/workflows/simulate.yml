@@ -1,0 +1,9 @@
+name: simulate
+on: [push, pull_request]
+jobs:
+  ghdl:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: sudo apt-get update && sudo apt-get install -y ghdl
+      - run: sim/run_ghdl.sh
