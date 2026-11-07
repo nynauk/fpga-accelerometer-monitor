@@ -45,24 +45,21 @@ port (
     -- Normal User LEDs
     LED       : out STD_LOGIC_VECTOR (15 downto 0);
 
-    -- RGB LEDs (accent LEDs on Nexys A7)
+    -- RGB LED (accent LED on Nexys A7)
     LED16_R   : out STD_LOGIC;
     LED16_G   : out STD_LOGIC;
-    LED16_B   : out STD_LOGIC;
-    LED17_R   : out STD_LOGIC;
-    LED17_G   : out STD_LOGIC;
-    LED17_B   : out STD_LOGIC
+    LED16_B   : out STD_LOGIC
 );
 end accel_monitor_top;
 
-architecture structural of accel_monitor_top is
+architecture mixed of accel_monitor_top is
 
     -- Component declarations
     component ACC_XYZ is
     generic (
         SYSCLK_FREQUENCY_HZ : integer := 100000000;
         SCLK_FREQUENCY_HZ   : integer := 1000000;
-        NUM_READS_AVG        : integer := 16;
+        NUM_READS_AVG        : integer := 32;
         UPDATE_FREQUENCY_HZ  : integer := 100
     );
     port (
@@ -186,44 +183,38 @@ begin
     z_val_signed <= signed(accel_z);
 
     -- Stage 2b: RGB LED orientation using LED16 only
-    -- LED16_R: X axis tilt detected (tilted left or right)
-    -- LED16_G: board flat face-up (Z acceleration near +1g)
-    -- LED16_B: Y axis tilt detected (tilted forward or backward)
-    -- Colour mixing gives intuitive feedback:
-    --   Green        = flat
-    --   Red          = tilted left/right
-    --   Blue         = tilted forward/backward
-    --   Yellow (R+G) = slight X tilt while mostly flat
-    --   Cyan (G+B)   = slight Y tilt while mostly flat
-    --   Purple (R+B) = tilted diagonally
-    --   Off          = upside down
+    -- Priority-based: one distinct colour per board orientation
+    --   Green         (0,1,0) = flat face-up      (Z < -800 mg)
+    --   White         (1,1,1) = upside-down        (Z >  800 mg)
+    --   Yellow        (1,1,0) = tilted left        (Y >  300 mg)
+    --   Red           (1,0,0) = tilted right       (Y < -300 mg)
+    --   Cyan          (0,1,1) = tilted toward user (X >  300 mg)
+    --   Magenta       (1,0,1) = tilted away        (X < -300 mg)
+    --   Off           (0,0,0) = transition / level
     process (x_val_signed, y_val_signed, z_val_signed)
     begin
-        -- Red: X axis tilt
-        if x_val_signed > 100 or x_val_signed < -100 then
-            LED16_R <= '1';
+        if z_val_signed < -800 then
+            -- Flat face-up: Green
+            LED16_R <= '0'; LED16_G <= '1'; LED16_B <= '0';
+        elsif z_val_signed > 800 then
+            -- Upside-down: White
+            LED16_R <= '1'; LED16_G <= '1'; LED16_B <= '1';
+        elsif y_val_signed > 300 then
+            -- Tilted left: Yellow
+            LED16_R <= '1'; LED16_G <= '1'; LED16_B <= '0';
+        elsif y_val_signed < -300 then
+            -- Tilted right: Red
+            LED16_R <= '1'; LED16_G <= '0'; LED16_B <= '0';
+        elsif x_val_signed > 300 then
+            -- Tilted toward user: Cyan
+            LED16_R <= '0'; LED16_G <= '1'; LED16_B <= '1';
+        elsif x_val_signed < -300 then
+            -- Tilted away: Magenta
+            LED16_R <= '1'; LED16_G <= '0'; LED16_B <= '1';
         else
-            LED16_R <= '0';
-        end if;
-
-        -- Green: board flat face-up (Z near +1g, threshold 800)
-        if z_val_signed > 800 then
-            LED16_G <= '1';
-        else
-            LED16_G <= '0';
-        end if;
-
-        -- Blue: Y axis tilt
-        if y_val_signed > 100 or y_val_signed < -100 then
-            LED16_B <= '1';
-        else
-            LED16_B <= '0';
+            -- Level / transition: Off
+            LED16_R <= '0'; LED16_G <= '0'; LED16_B <= '0';
         end if;
     end process;
 
-    -- LED17 not used for orientation, drive off
-    LED17_R <= '0';
-    LED17_G <= '0';
-    LED17_B <= '0';
-
-end structural;
+end mixed;

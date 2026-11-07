@@ -23,7 +23,7 @@ architecture testbench of bin2BCD_tb is
         thousands : out STD_LOGIC_VECTOR (3 downto 0);
         hundreds  : out STD_LOGIC_VECTOR (3 downto 0);
         tens      : out STD_LOGIC_VECTOR (3 downto 0);
-        unit      : out STD_LOGIC_VECTOR (3 downto 0)
+        unit     : out STD_LOGIC_VECTOR (3 downto 0)
     );
     end component;
 
@@ -33,7 +33,7 @@ architecture testbench of bin2BCD_tb is
     signal thousands_tb : STD_LOGIC_VECTOR (3 downto 0);
     signal hundreds_tb  : STD_LOGIC_VECTOR (3 downto 0);
     signal tens_tb      : STD_LOGIC_VECTOR (3 downto 0);
-    signal unit_tb      : STD_LOGIC_VECTOR (3 downto 0);
+    signal units_tb     : STD_LOGIC_VECTOR (3 downto 0);
 
     -- Error counter
     signal error_count  : integer := 0;
@@ -48,7 +48,7 @@ begin
         thousands => thousands_tb,
         hundreds  => hundreds_tb,
         tens      => tens_tb,
-        unit      => unit_tb
+        unit     => units_tb
     );
 
     -- Stimulus and verification process
@@ -123,7 +123,7 @@ begin
             actual_thou := to_integer(unsigned(thousands_tb));
             actual_hund := to_integer(unsigned(hundreds_tb));
             actual_tens := to_integer(unsigned(tens_tb));
-            actual_unit := to_integer(unsigned(unit_tb));
+            actual_unit := to_integer(unsigned(units_tb));
 
             -- Verify sign
             assert (sign_out_tb = exp_sign)
@@ -186,7 +186,7 @@ begin
             actual_thou := to_integer(unsigned(thousands_tb));
             actual_hund := to_integer(unsigned(hundreds_tb));
             actual_tens := to_integer(unsigned(tens_tb));
-            actual_unit := to_integer(unsigned(unit_tb));
+            actual_unit := to_integer(unsigned(units_tb));
 
             if (actual_thou /= exp_thou) or (actual_hund /= exp_hund) or
                (actual_tens /= exp_tens) or (actual_unit /= exp_unit) then

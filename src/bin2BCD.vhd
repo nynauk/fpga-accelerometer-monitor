@@ -3,7 +3,7 @@
 -- Description: Converts a 12-bit signed two's complement binary number to BCD.
 --              Uses the Double Dabble (shift-and-add-3) algorithm.
 --              Outputs: sign bit, thousands (4-bit), hundreds (4-bit),
---                       tens (4-bit), unit (4-bit).
+--                       tens (4-bit), units (4-bit).
 --              The 12-bit signed input range is -2048 to +2047.
 --              After taking absolute value, max is 2048, so 4 BCD digits needed.
 ----------------------------------------------------------------------------------
@@ -18,7 +18,7 @@ port (
     thousands : out STD_LOGIC_VECTOR (3 downto 0);
     hundreds  : out STD_LOGIC_VECTOR (3 downto 0);
     tens      : out STD_LOGIC_VECTOR (3 downto 0);
-    unit      : out STD_LOGIC_VECTOR (3 downto 0)
+    unit     : out STD_LOGIC_VECTOR (3 downto 0)
 );
 end bin2BCD;
 
@@ -84,7 +84,7 @@ begin
         thousands <= STD_LOGIC_VECTOR(bcd_thou);
         hundreds  <= STD_LOGIC_VECTOR(bcd_hund);
         tens      <= STD_LOGIC_VECTOR(bcd_tens);
-        unit      <= STD_LOGIC_VECTOR(bcd_unit);
+        unit     <= STD_LOGIC_VECTOR(bcd_unit);
     end process;
 
 end behavioral;

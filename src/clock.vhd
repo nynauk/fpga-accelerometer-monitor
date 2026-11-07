@@ -3,7 +3,7 @@
 -- Description: Clock divider module that generates a tick signal for the
 --              7-segment display scanning. The refresh rate is 4ms total for
 --              all digits. With 5 active digits, each digit gets ~800us.
---              At 100MHz system clock: 100MHz * 800us = 80000 counts per digit.
+--              At 100MHz system clock and 1.25kHz scan: 100MHz / 1250 = 80000 counts per tick.
 ----------------------------------------------------------------------------------
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
@@ -12,7 +12,7 @@ use IEEE.NUMERIC_STD.ALL;
 entity clock is
 generic (
     SYSCLK_FREQUENCY_HZ : integer := 100000000;
-    SCAN_FREQUENCY_HZ   : integer := 5000  -- 5 digits at 4ms total = ~1.25kHz per digit
+    SCAN_FREQUENCY_HZ   : integer := 1250  -- 5 digits at 4ms total = 1.25kHz scan rate
 );
 port (
     clk      : in  STD_LOGIC;

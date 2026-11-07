@@ -35,7 +35,7 @@ architecture structural of display is
         thousands : out STD_LOGIC_VECTOR (3 downto 0);
         hundreds  : out STD_LOGIC_VECTOR (3 downto 0);
         tens      : out STD_LOGIC_VECTOR (3 downto 0);
-        unit      : out STD_LOGIC_VECTOR (3 downto 0)
+        unit     : out STD_LOGIC_VECTOR (3 downto 0)
     );
     end component;
 
@@ -67,7 +67,7 @@ architecture structural of display is
         thousands : in  STD_LOGIC_VECTOR (3 downto 0);
         hundreds  : in  STD_LOGIC_VECTOR (3 downto 0);
         tens      : in  STD_LOGIC_VECTOR (3 downto 0);
-        unit      : in  STD_LOGIC_VECTOR (3 downto 0);
+        unit     : in  STD_LOGIC_VECTOR (3 downto 0);
         bcd_out   : out STD_LOGIC_VECTOR (3 downto 0)
     );
     end component;
@@ -106,14 +106,14 @@ begin
         thousands => thou_sig,
         hundreds  => hund_sig,
         tens      => tens_sig,
-        unit      => unit_sig
+        unit     => unit_sig
     );
 
     -- Clock divider for scanning
     CLK_DIV: clock
     generic map (
         SYSCLK_FREQUENCY_HZ => SYSCLK_FREQUENCY_HZ,
-        SCAN_FREQUENCY_HZ   => 5000
+        SCAN_FREQUENCY_HZ   => 1250
     )
     port map (
         clk     => clk,
@@ -138,7 +138,7 @@ begin
         thousands => thou_sig,
         hundreds  => hund_sig,
         tens      => tens_sig,
-        unit      => unit_sig,
+        unit     => unit_sig,
         bcd_out   => mux_out_sig
     );
 

@@ -1,0 +1,23 @@
+Time resolution is 1 ps
+=== bin2BCD Testbench Start ===
+PASS: input = 0 -> 0000
+PASS: input = 1 -> 0001
+PASS: input = 9 -> 0009
+PASS: input = 10 -> 0010
+PASS: input = 99 -> 0099
+PASS: input = 100 -> 0100
+PASS: input = 123 -> 0123
+PASS: input = 456 -> 0456
+PASS: input = 999 -> 0999
+PASS: input = 1000 -> 1000
+PASS: input = 2047 -> 2047
+PASS: input = -1 -> -0001
+PASS: input = -9 -> -0009
+PASS: input = -10 -> -0010
+PASS: input = -99 -> -0099
+PASS: input = -100 -> -0100
+PASS: input = -123 -> -0123
+PASS: input = -999 -> -0999
+PASS: input = -1000 -> -1000
+PASS: input = -2048 -> -2048
+=== Exhaustive sweep from -2048 to 2047 ===

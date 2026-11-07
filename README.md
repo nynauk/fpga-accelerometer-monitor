@@ -14,9 +14,10 @@ built in Vivado 2023.2 between January and March 2026.
 - **Verified.** The binary-to-BCD converter has a self-checking testbench: 20 chosen values (zero, the limits
   -2048 and 2047, and the digit boundaries in both signs) plus an exhaustive sweep of all 4,096 inputs. It
   passes in Vivado XSim and in GHDL, and GitHub Actions re-runs it on every push.
-- **Implemented.** Routed in Vivado at 100 MHz with all timing constraints met: worst setup slack 5.385 ns,
-  worst hold slack 0.142 ns, 290 LUTs and 280 flip-flops (0.46% and 0.22% of the device), no block RAM or DSP.
-  The reports are in [`reports/`](reports).
+- **Implemented.** Routed in Vivado at 100 MHz with all timing constraints met across 644 endpoints: worst setup
+  slack 4.723 ns and worst hold slack 0.139 ns. Synthesis used 301 LUTs (292 after placement) and 282 flip-flops,
+  under 0.5% of the device, with no block RAM or DSP, at 0.128 W total on-chip power. The reports are in
+  [`reports/`](reports).
 
 ## Design
 
@@ -43,7 +44,8 @@ built in Vivado 2023.2 between January and March 2026.
 | `clock.vhd`, `counter.vhd`, `DAnC.vhd` | Digit scan: a tick every 800 µs (80,000 cycles at 100 MHz), 4 ms per full refresh, active-low anodes | Me |
 | `sim/bin2BCD_tb.vhd` | Self-checking testbench with assertions and an exhaustive sweep | Me |
 | `constraints/*.xdc` | Pins and the 100 MHz clock for the Nexys A7-100T | Me |
-| `src/supplied/SPI_If.vhd`, `ADXL362Ctrl.vhd`, `ACC_XYZ.vhd` | SPI master, ADXL362 configuration and read-out, averaging wrapper | Supplied with the coursework, unchanged; the top level sets `NUM_READS_AVG` to 32 |
+| `src/supplied/SPI_If.vhd`, `ACC_XYZ.vhd` | SPI master and the averaging wrapper | Supplied with the coursework, unchanged; the top level sets `NUM_READS_AVG` to 32 |
+| `src/supplied/ADXL362Ctrl.vhd` | ADXL362 configuration, read-out and averaging | Supplied, with the averaging rewritten by me: each 12-bit sample is sign-extended with `numeric_std` before it is summed, replacing the supplied `std_logic_signed` arithmetic |
 
 ### Display path
 
@@ -83,8 +85,8 @@ switch modes, axis selection and LED thresholds are checked only by elaboration 
 
 ```
 src/            my VHDL modules
-src/supplied/   SPI and ADXL362 modules provided with the coursework
+src/supplied/   SPI and ADXL362 modules provided with the coursework (ADXL362 averaging modified)
 sim/            bin2BCD testbench and the GHDL script
 constraints/    Nexys A7-100T pin and clock constraints
-reports/        Vivado 2023.2 timing summary and utilisation after place and route
+reports/        Vivado 2023.2 timing, utilisation (synthesis and placement), power and the XSim testbench log
 ```
